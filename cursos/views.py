@@ -73,7 +73,7 @@ class CursoViewSet(viewsets.ModelViewSet):
 #     serializer_class = AvaliacaoSerializer
 
 class AvaliacaoViewSet(
-                        # mixins.ListModelMixin,
+                        mixins.ListModelMixin,
                         mixins.CreateModelMixin,
                         mixins.RetrieveModelMixin,
                         mixins.UpdateModelMixin,
