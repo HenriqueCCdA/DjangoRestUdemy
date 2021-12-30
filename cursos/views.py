@@ -1,4 +1,5 @@
-from rest_framework import generics, viewsets
+from django.db.models import query
+from rest_framework import generics, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -55,11 +56,28 @@ class CursoViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def avaliacoes(self, request, pk=None):
-        curso = self.get_object()
-        serializer = AvaliacaoSerializer(curso.avaliacoes.all(), many=True)
+        self.pagination_class.page_size = 1
+        _avaliacoes = Avaliacao.objects.filter(curso_id=pk)
+        page = self.paginate_queryset(_avaliacoes)
+
+        if page is not None:
+            serializer = AvaliacaoSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = AvaliacaoSerializer(_avaliacoes, many=True)
         return Response(serializer.data)
 
 
-class AvaliacaoViewSet(viewsets.ModelViewSet):
+# class AvaliacaoViewSet(viewsets.ModelViewSet):
+#     queryset = Avaliacao.objects.all()
+#     serializer_class = AvaliacaoSerializer
+
+class AvaliacaoViewSet(
+                        # mixins.ListModelMixin,
+                        mixins.CreateModelMixin,
+                        mixins.RetrieveModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.DestroyModelMixin,
+                        viewsets.GenericViewSet):
     queryset = Avaliacao.objects.all()
     serializer_class = AvaliacaoSerializer
