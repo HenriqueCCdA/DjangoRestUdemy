@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 
-Token: 0d70411aa592ab7157c781605f6221154d0882e4
+Token admin: 0d70411aa592ab7157c781605f6221154d0882e4
+Token felicity: bf60f0a4c68813e17640d99ab3a1cb64332fff87
 """
 
 from pathlib import Path
@@ -145,5 +146,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2
+    'PAGE_SIZE': 2,
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/minute', # second, day, month, year
+        'user': '10/minute'
+    }
 }
